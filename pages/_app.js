@@ -4,7 +4,7 @@ import Head from 'next/head';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import JssProvider from 'react-jss/lib/JssProvider';
-import getPageContext from '../src/getPageContext';
+import getPageContext from '../lib/getPageContext';
 
 class MyApp extends App {
   constructor() {
@@ -25,7 +25,7 @@ class MyApp extends App {
     return (
       <Container>
         <Head>
-          <title>My page</title>
+          <title>Crecic Systems</title>
         </Head>
         {/* Wrap every page in Jss and Theme providers */}
         <JssProvider
