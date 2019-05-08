@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
-    paddingTop: theme.spacing.unit * 8,
+    paddingTop: theme.spacing.unit * 6,
     paddingBottom: theme.spacing.unit * 2,
   },
 });
@@ -26,13 +26,13 @@ function Index(props) {
           alignItems="flex-start"
         >
           <Grid item>
-            <ZoomCard avatarLetter="C" title="Contratos" description="Sistema de gestión de contratos para proveedores de Crecic S.A." image="/static/contratos.png" transitionDelay="1000ms" />
+            <ZoomCard avatarLetter="C" title="Contratos" description="Sistema de gestión de contratos para proveedores de Crecic S.A." image="/static/contratos.png" transitionDelay="500ms" />
           </Grid>
           <Grid item>
-            <ZoomCard avatarLetter="S" title="Sistema S" description="Sistema de gestión de x para proveedores de Crecic S.A." image="/static/sistema-1.jpg" transitionDelay="2000ms" />
+            <ZoomCard avatarLetter="S" title="Sistema S" description="Sistema de gestión de x para proveedores de Crecic S.A." image="/static/sistema-1.jpg" transitionDelay="1500ms" />
           </Grid>
           <Grid item>
-            <ZoomCard avatarLetter="L" title="Sistema L" description="Sistema de gestión de y para proveedores de Crecic S.A." image="/static/sistema-2.jpg" transitionDelay="3000ms" />
+            <ZoomCard avatarLetter="L" title="Sistema L" description="Sistema de gestión de y para proveedores de Crecic S.A." image="/static/sistema-2.jpg" transitionDelay="2500ms" />
           </Grid>
         </Grid>
       </Grid>

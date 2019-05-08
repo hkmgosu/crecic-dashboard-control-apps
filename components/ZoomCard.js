@@ -15,6 +15,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 const styles = theme => ({
   card: {
     maxWidth: 400,
+    minHeight: 300
   },
   media: {
     height: 0,
@@ -26,6 +27,9 @@ const styles = theme => ({
   avatar: {
     backgroundColor: blue[500],
   },
+  content: {
+      minHeight: 81
+  }
 });
 
 const ZoomCard = (props) => {
@@ -55,7 +59,7 @@ const ZoomCard = (props) => {
                 image={image}
                 title={title}
             />
-            <CardContent>
+            <CardContent className={classes.content}>
                 <Typography component="p">
                 {description}
                 </Typography>
