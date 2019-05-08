@@ -1,11 +1,13 @@
 {
   "name": "crecic-next-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "dashboard apps",
   "main": "index.js",
   "dependencies": {
-    "@material-ui/core": "^3.9.3",
-    "@material-ui/icons": "^3.0.2",
+    "@material-ui/styles": "latest",
+    "@material-ui/icons": "latest",
+    "@material-ui/core": "latest",
+    "isomorphic-unfetch": "latest",
     "jss": "latest",
     "next": "latest",
     "prop-types": "latest",
@@ -17,7 +19,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "now-build": "next build"
   },
   "keywords": [],
   "author": "",

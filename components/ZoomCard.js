@@ -14,12 +14,11 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const styles = theme => ({
   card: {
-    maxWidth: 400,
-    minHeight: 300
+    maxWidth: 400
   },
   media: {
-    height: 0,
     paddingTop: '56.25%', // 16:9
+    minHeight: 225
   },
   actions: {
     display: 'flex',
@@ -33,9 +32,7 @@ const styles = theme => ({
 });
 
 const ZoomCard = (props) => {
-  const { classes, avatarLetter, image, title, description, transitionDelay } = props;
-
-  console.log("props", props);
+  const { classes, avatarLetter, image, title, subheader, description, transitionDelay } = props;
 
   return (
     <Zoom in={true} style={{ transitionDelay }}>
@@ -52,6 +49,7 @@ const ZoomCard = (props) => {
             </IconButton>
             }
             title={title}
+            subheader={subheader}
         />
         <CardActionArea>
             <CardMedia
@@ -74,6 +72,7 @@ const ZoomCard = (props) => {
 ZoomCard.propTypes = {
     classes: PropTypes.object.isRequired,
     title: PropTypes.string.isRequired,
+    subheader: PropTypes.string,
     description: PropTypes.string.isRequired,
     avatarLetter: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
