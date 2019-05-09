@@ -32,7 +32,7 @@ const styles = theme => ({
 });
 
 const ZoomCard = (props) => {
-  const { classes, avatarLetter, image, title, subheader, description, transitionDelay } = props;
+  const { classes, avatarLetter, image, title, subheader, description, transitionDelay, cardActionAreaOnClick } = props;
 
   return (
     <Zoom in={true} style={{ transitionDelay }}>
@@ -51,7 +51,7 @@ const ZoomCard = (props) => {
             title={title}
             subheader={subheader}
         />
-        <CardActionArea>
+        <CardActionArea onClick={cardActionAreaOnClick ? (() => cardActionAreaOnClick()) : (() => {})}>
             <CardMedia
                 className={classes.media}
                 image={image}
@@ -76,7 +76,8 @@ ZoomCard.propTypes = {
     description: PropTypes.string.isRequired,
     avatarLetter: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
-    transitionDelay: PropTypes.string.isRequired
+    transitionDelay: PropTypes.string.isRequired,
+    cardActionAreaOnClick: PropTypes.func
   };
 
 export default withStyles(styles)(ZoomCard);

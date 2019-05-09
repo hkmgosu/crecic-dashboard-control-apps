@@ -5,6 +5,7 @@ import ZoomCard from '../components/ZoomCard';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
+import Snackbar from '@material-ui/core/Snackbar';
 
 const styles = theme => ({
   root: {
@@ -16,6 +17,61 @@ const styles = theme => ({
 
 function Index(props) {
   const { classes } = props;
+  const [state, setState] = React.useState({
+    openSnackbar: false,
+    messageSnackbar: '',
+    loading: false,
+    serverOnline: false,
+    apiOnline: false
+  })
+
+  const handleCloseSnackbar = (openSnackbar = false) => {
+    setState({ ...state, openSnackbar })
+  }
+
+  const validateServerOnline = async () => {
+        setState({ ...state, messageSnackbar: 'Verificando Servidor...'})
+        console.log("verificando server")
+        const serverOnline = await fetch('https://jsonplaceholder.typicode.com');
+        const resServerOnline = await serverOnline;
+        console.log("antes promise", serverOnline);
+        return new Promise( (resolve) => {
+          setTimeout(() => {
+              console.log('resServer', resServerOnline);
+              console.log("resServer END");
+              resolve(resServerOnline);
+
+          }, 2000)
+        })
+  }
+
+  // const validateApiOnline = () => {
+  //   setState({ ...state, messageSnackbar: 'Verificando Aplicación...'})
+  //   console.log("verificando App")
+  //   const appOnline = fetch('https://jsonplaceholder.typicode.com/posts/42');
+  //   const resAppOnline = appOnline;
+  //   return new Promise( (resolve) => {
+  //     setTimeout(() => {
+  //         console.log('resApp', resAppOnline);
+  //         console.log("resApp END");
+  //         resolve(resAppOnline);
+  //     }, 2000)
+  //   })
+  // }
+
+  const getSystemStatus = async () => {
+    try{
+      console.log("try init");
+      setState({ ...state, loading: true, openSnackbar: true, messageSnackbar: 'Conectando...' });
+      await validateServerOnline();
+      // validateApiOnline();
+      console.log("conectado");
+    }catch(err){
+      console.log("error", err);
+      setState({ ...state, loading: false, openSnackbar: true, messageSnackbar: 'Error al tratar de conectarse al sistema, intente nuevamente.' })
+      return;
+    }
+  }
 
   return (
     <DashboardLayout>
@@ -36,6 +92,7 @@ function Index(props) {
           </Grid>
           <Grid item>
             <ZoomCard
+              cardActionAreaOnClick={(getSystemStatus)}
               avatarLetter="C" 
               title="Contratos" 
               subheader="v1.0"
@@ -63,6 +120,33 @@ function Index(props) {
           </Grid>
         </Grid>
       </Grid>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        open={state.openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        ContentProps={{
+          'aria-describedby': 'message-id',
+        }}
+        message={<span id="message-id">{state.messageSnackbar}</span>}
+        // action={[
+        //   <Button key="undo" color="secondary" size="small" onClick={handleClose}>
+        //     UNDO
+        //   </Button>,
+        //   <IconButton
+        //     key="close"
+        //     aria-label="Close"
+        //     color="inherit"
+        //     className={classes.close}
+        //     onClick={handleClose}
+        //   >
+        //     <CloseIcon />
+        //   </IconButton>,
+        // ]}
+      />
     </DashboardLayout>
   );
 }
