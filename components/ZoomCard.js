@@ -32,11 +32,11 @@ const styles = theme => ({
 });
 
 const ZoomCard = (props) => {
-  const { classes, avatarLetter, image, title, subheader, description, transitionDelay, cardActionAreaOnClick } = props;
+  const { classes, avatarLetter, image, title, subheader, description, transitionDelay, cardActionAreaOnClick, loading } = props;
 
   return (
     <Zoom in={true} style={{ transitionDelay }}>
-        <Card className={classes.card}>
+        <Card className={classes.card} style={ loading ? { filter: 'blur(4px)'} : {}}>
         <CardHeader
             avatar={
             <Avatar aria-label={title} className={classes.avatar}>
@@ -51,7 +51,9 @@ const ZoomCard = (props) => {
             title={title}
             subheader={subheader}
         />
-        <CardActionArea onClick={cardActionAreaOnClick ? (() => cardActionAreaOnClick()) : (() => {})}>
+        {
+          !loading ? 
+          <CardActionArea onClick={cardActionAreaOnClick ? (() => cardActionAreaOnClick()) : (() => {})}>
             <CardMedia
                 className={classes.media}
                 image={image}
@@ -62,7 +64,20 @@ const ZoomCard = (props) => {
                 {description}
                 </Typography>
             </CardContent>
-        </CardActionArea>
+        </CardActionArea> :
+        <div style={{ filter: 'blur(4px)'}}>
+          <CardMedia
+              className={classes.media}
+              image={image}
+              title={title}
+          />
+          <CardContent className={classes.content}>
+              <Typography component="p">
+              {description}
+              </Typography>
+          </CardContent>
+        </div>
+        }
         </Card>
     </Zoom>
     

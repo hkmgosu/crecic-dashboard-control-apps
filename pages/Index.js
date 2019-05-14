@@ -5,14 +5,14 @@ import ZoomCard from '../components/ZoomCard';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Fade from '@material-ui/core/Fade';
-import Snackbar from '@material-ui/core/Snackbar';
+import BigSnackbar from '../components/BigSnackbar';
 
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 6,
     paddingBottom: theme.spacing.unit * 2,
-  },
+  }
 });
 
 function Index(props) {
@@ -21,55 +21,73 @@ function Index(props) {
     openSnackbar: false,
     messageSnackbar: '',
     loading: false,
-    serverOnline: false,
-    apiOnline: false
+    loadingCard: false,
+    snackbarVariant: 'info',
   })
 
-  const handleCloseSnackbar = (openSnackbar = false) => {
-    setState({ ...state, openSnackbar })
+  const handleLoading = (appStatus) => {
+    setState({ ...state, ...appStatus });
   }
 
-  const validateServerOnline = async () => {
-        setState({ ...state, messageSnackbar: 'Verificando Servidor...'})
-        console.log("verificando server")
-        const serverOnline = await fetch('https://jsonplaceholder.typicode.com');
+  const handleSystemConnection = async ({ message = '', loading = true, type = 'info' }) => {
+    console.log("handleSystemConnection: ", message);
+    handleLoading({
+      openSnackbar: true, 
+      messageSnackbar: message,
+      loading, 
+      loadingCard: true, 
+      snackbarVariant: type
+    });
+    return new Promise ( (resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 1300)
+    });
+  }
+
+  const validateServiceOnline = async (url) => {
+        const serverOnline = await fetch(url);
         const resServerOnline = await serverOnline;
-        console.log("antes promise", serverOnline);
         return new Promise( (resolve) => {
           setTimeout(() => {
-              console.log('resServer', resServerOnline);
-              console.log("resServer END");
               resolve(resServerOnline);
-
-          }, 2000)
+          }, 600)
         })
   }
 
-  // const validateApiOnline = () => {
-  //   setState({ ...state, messageSnackbar: 'Verificando Aplicación...'})
-  //   console.log("verificando App")
-  //   const appOnline = fetch('https://jsonplaceholder.typicode.com/posts/42');
-  //   const resAppOnline = appOnline;
-  //   return new Promise( (resolve) => {
-  //     setTimeout(() => {
-  //         console.log('resApp', resAppOnline);
-  //         console.log("resApp END");
-  //         resolve(resAppOnline);
-  //     }, 2000)
-  //   })
-  // }
-
   const getSystemStatus = async () => {
     try{
-      console.log("try init");
-      setState({ ...state, loading: true, openSnackbar: true, messageSnackbar: 'Conectando...' });
-      await validateServerOnline();
-      // validateApiOnline();
-      console.log("conectado");
+      console.log("init: getSystemStatus");
+
+      // verificando servidor
+      await handleSystemConnection({ message: "Conectando a servidor", type: 'info'});
+      await handleSystemConnection({ message: "Verificando servidor", type: 'info' });
+      let serviceOnlineStatus = await validateServiceOnline("https://jsonplaceholder.typicode.com");
+      if(serviceOnlineStatus.ok){
+        console.log("servidor online");
+        await handleSystemConnection({ message: "Servidor ONLINE", loading: false, type: 'success'});
+      }else{
+        await handleSystemConnection({ message: "No se ha podido conectar al servidor.", loading: false, type: 'error'});
+        throw new Error("No se ha podido conectar al servidor.");
+      }
+
+      // verificando APP
+      await handleSystemConnection({ message: "Conectando con el software", type: 'info' });
+      await handleSystemConnection({ message: "Verificando software", type: 'info'})
+      serviceOnlineStatus = await validateServiceOnline("https://jsonplaceholder.typicode.com/posts/42");
+      if(serviceOnlineStatus.ok){
+        console.log("APP online");
+        await handleSystemConnection({ message: "Software ONLINE", loading: false, type: 'success' });
+        await handleSystemConnection({ message: "Ingresando...", loading: true, type: 'success'});
+        window.location.assign("http://www.w3schools.com")
+      }else{
+        await handleSystemConnection({ message: "No se ha podido conectar al Software.", loading: false, type: 'error'});
+        throw new Error("No se ha podido conectar al Software.");
+        // send alert
+      }
     }catch(err){
-      console.log("error", err);
-      setState({ ...state, loading: false, openSnackbar: true, messageSnackbar: 'Error al tratar de conectarse al sistema, intente nuevamente.' })
-      return;
+      console.error("error", err);
+      await handleSystemConnection({ message: "Error al conectar, intente nuevamente.", loading: false, type: 'error'});
     }
   }
 
@@ -93,6 +111,7 @@ function Index(props) {
           <Grid item>
             <ZoomCard
               cardActionAreaOnClick={(getSystemStatus)}
+              loading={state.loadingCard}
               avatarLetter="C" 
               title="Contratos" 
               subheader="v1.0"
@@ -120,33 +139,12 @@ function Index(props) {
           </Grid>
         </Grid>
       </Grid>
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
+      <BigSnackbar 
         open={state.openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        ContentProps={{
-          'aria-describedby': 'message-id',
-        }}
-        message={<span id="message-id">{state.messageSnackbar}</span>}
-        // action={[
-        //   <Button key="undo" color="secondary" size="small" onClick={handleClose}>
-        //     UNDO
-        //   </Button>,
-        //   <IconButton
-        //     key="close"
-        //     aria-label="Close"
-        //     color="inherit"
-        //     className={classes.close}
-        //     onClick={handleClose}
-        //   >
-        //     <CloseIcon />
-        //   </IconButton>,
-        // ]}
-      />
+        message={state.messageSnackbar}
+        loading={state.loading} 
+        variant={state.snackbarVariant}
+        />
     </DashboardLayout>
   );
 }

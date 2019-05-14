@@ -4,9 +4,8 @@
   "description": "dashboard apps",
   "main": "index.js",
   "dependencies": {
-    "@material-ui/styles": "latest",
-    "@material-ui/icons": "latest",
     "@material-ui/core": "latest",
+    "@material-ui/icons": "latest",
     "isomorphic-unfetch": "latest",
     "jss": "latest",
     "next": "latest",
