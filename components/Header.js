@@ -10,6 +10,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import Zoom from '@material-ui/core/Zoom';
 
 
 const styles = theme => ({
@@ -125,43 +126,45 @@ const styles = theme => ({
       );
   
       return (
-        <div className={classes.root}>
-          <AppBar position="static">
-            <Toolbar>
-              <div>
-                <img src="/static/logo_crecic.png" style={ { margin: '6px' } } />
-              </div>
-              <div className={classes.grow} />
-              <div className={classes.sectionDesktop}>
-                <IconButton color="inherit">
-                  <Badge badgeContent={4} color="secondary">
-                    <MailIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton color="inherit">
-                  <Badge badgeContent={17} color="secondary">
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
-                <IconButton
-                  aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                  aria-haspopup="true"
-                  onClick={this.handleProfileMenuOpen}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-              </div>
-              <div className={classes.sectionMobile}>
-                <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
-                  <MoreIcon />
-                </IconButton>
-              </div>
-            </Toolbar>
-          </AppBar>
-          {renderMenu}
-          {renderMobileMenu}
-        </div>
+        <Zoom in={true} >
+          <div className={classes.root}>
+            <AppBar position="static">
+              <Toolbar>
+                <div>
+                  <img src="/static/logo_crecic.png" style={ { margin: '9px' } } />
+                </div>
+                <div className={classes.grow} />
+                <div className={classes.sectionDesktop}>
+                  <IconButton color="inherit">
+                    <Badge badgeContent={4} color="secondary">
+                      <MailIcon />
+                    </Badge>
+                  </IconButton>
+                  <IconButton color="inherit">
+                    <Badge badgeContent={17} color="secondary">
+                      <NotificationsIcon />
+                    </Badge>
+                  </IconButton>
+                  <IconButton
+                    aria-owns={isMenuOpen ? 'material-appbar' : undefined}
+                    aria-haspopup="true"
+                    onClick={this.handleProfileMenuOpen}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                </div>
+                <div className={classes.sectionMobile}>
+                  <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
+                    <MoreIcon />
+                  </IconButton>
+                </div>
+              </Toolbar>
+            </AppBar>
+            {renderMenu}
+            {renderMobileMenu}
+          </div>
+        </Zoom>
       );
     }
   }

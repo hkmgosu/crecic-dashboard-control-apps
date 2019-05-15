@@ -1,10 +1,10 @@
-import Header from './Header'
+import Header from "./Header";
 
 const DashboardLayout = props => (
-    <div>
-        <Header />
-        {props.children}
-    </div>
-)
+  <div>
+    <Header />
+    {props.children}
+  </div>
+);
 
-export default DashboardLayout
+export default DashboardLayout;

@@ -1,17 +1,18 @@
-import DashboardLayout from '../components/DashboardLayout'
-import PropTypes from 'prop-types'
-import { withStyles } from '@material-ui/core/styles';
-import ZoomCard from '../components/ZoomCard';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import Fade from '@material-ui/core/Fade';
-import BigSnackbar from '../components/BigSnackbar';
+import DashboardLayout from "../components/DashboardLayout";
+import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
+import ZoomCard from "../components/ZoomCard";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import Fade from "@material-ui/core/Fade";
+import BigSnackbar from "../components/BigSnackbar";
+import fetch from "isomorphic-unfetch";
 
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 6,
-    paddingBottom: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2
   }
 });
 
@@ -19,77 +20,122 @@ function Index(props) {
   const { classes } = props;
   const [state, setState] = React.useState({
     openSnackbar: false,
-    messageSnackbar: '',
+    messageSnackbar: "",
     loading: false,
     loadingCard: false,
-    snackbarVariant: 'info',
-  })
+    snackbarVariant: "info"
+  });
 
-  const handleLoading = (appStatus) => {
-    setState({ ...state, ...appStatus });
-  }
+  const handleLoading = appStatus => {
+    setState({
+      ...state,
+      ...appStatus
+    });
+  };
 
-  const handleSystemConnection = async ({ message = '', loading = true, type = 'info' }) => {
-    console.log("handleSystemConnection: ", message);
+  const handleSystemConnection = async ({
+    message = "",
+    loading = true,
+    type = "info",
+    loadingCard = true
+  }) => {
+    console.info("handleSystemConnection: ", message);
     handleLoading({
-      openSnackbar: true, 
+      openSnackbar: true,
       messageSnackbar: message,
-      loading, 
-      loadingCard: true, 
+      loading,
+      loadingCard,
       snackbarVariant: type
     });
-    return new Promise ( (resolve) => {
+    return new Promise(resolve => {
       setTimeout(() => {
         resolve(true);
-      }, 1300)
+      }, 1300);
     });
-  }
+  };
 
-  const validateServiceOnline = async (url) => {
-        const serverOnline = await fetch(url);
-        const resServerOnline = await serverOnline;
-        return new Promise( (resolve) => {
-          setTimeout(() => {
-              resolve(resServerOnline);
-          }, 600)
-        })
-  }
+  const validateServiceOnline = async url => {
+    const serverOnline = await fetch(url);
+    const resServerOnline = await serverOnline;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(resServerOnline);
+      }, 600);
+    });
+  };
 
   const getSystemStatus = async () => {
-    try{
+    try {
       console.log("init: getSystemStatus");
 
       // verificando servidor
-      await handleSystemConnection({ message: "Conectando a servidor", type: 'info'});
-      await handleSystemConnection({ message: "Verificando servidor", type: 'info' });
-      let serviceOnlineStatus = await validateServiceOnline("https://jsonplaceholder.typicode.com");
-      if(serviceOnlineStatus.ok){
+      await handleSystemConnection({
+        message: "Conectando a servidor",
+        type: "info"
+      });
+      await handleSystemConnection({
+        message: "Verificando servidor",
+        type: "info"
+      });
+      let serviceOnlineStatus = await validateServiceOnline(
+        "https://jsonplaceholder.typicode.com"
+      );
+      if (serviceOnlineStatus.ok) {
         console.log("servidor online");
-        await handleSystemConnection({ message: "Servidor ONLINE", loading: false, type: 'success'});
-      }else{
-        await handleSystemConnection({ message: "No se ha podido conectar al servidor.", loading: false, type: 'error'});
-        throw new Error("No se ha podido conectar al servidor.");
+        await handleSystemConnection({
+          message: "Servidor ONLINE",
+          loading: false,
+          type: "success"
+        });
+      } else {
+        await handleSystemConnection({
+          message: "No se ha podido conectar al servidor.",
+          loading: false,
+          loadingCard: false,
+          type: "error"
+        });
       }
 
       // verificando APP
-      await handleSystemConnection({ message: "Conectando con el software", type: 'info' });
-      await handleSystemConnection({ message: "Verificando software", type: 'info'})
-      serviceOnlineStatus = await validateServiceOnline("https://jsonplaceholder.typicode.com/posts/42");
-      if(serviceOnlineStatus.ok){
+      await handleSystemConnection({
+        message: "Conectando con el software",
+        type: "info"
+      });
+      await handleSystemConnection({
+        message: "Verificando software",
+        type: "info"
+      });
+      serviceOnlineStatus = await validateServiceOnline(
+        "https://jsonplaceholder.typicode.com/posts/42"
+      );
+      if (serviceOnlineStatus.ok) {
         console.log("APP online");
-        await handleSystemConnection({ message: "Software ONLINE", loading: false, type: 'success' });
-        await handleSystemConnection({ message: "Ingresando...", loading: true, type: 'success'});
-        window.location.assign("http://www.w3schools.com")
-      }else{
-        await handleSystemConnection({ message: "No se ha podido conectar al Software.", loading: false, type: 'error'});
-        throw new Error("No se ha podido conectar al Software.");
+        await handleSystemConnection({
+          message: "Software ONLINE",
+          loading: false,
+          type: "success"
+        });
+        // await handleSystemConnection({ message: "Ingresando...", loading: true, type: 'success'});
+        // window.location.assign("http://www.localhost:4001")
+      } else {
+        await handleSystemConnection({
+          message: "No se ha podido conectar al Software.",
+          loading: false,
+          loadingCard: false,
+          type: "error"
+        });
         // send alert
       }
-    }catch(err){
+    } catch (err) {
       console.error("error", err);
-      await handleSystemConnection({ message: "Error al conectar, intente nuevamente.", loading: false, type: 'error'});
+      await handleSystemConnection({
+        message: "Error al conectar, intente nuevamente.",
+        loading: false,
+        loadingCard: false,
+        type: "error"
+      });
     }
-  }
+  };
 
   return (
     <DashboardLayout>
@@ -104,30 +150,32 @@ function Index(props) {
           <Grid item xs={12}>
             <Fade in={true}>
               <Typography variant="h4" align="center" gutterBottom>
-                Bienvenido, porfavor seleccione un sistema
-              </Typography>
-            </Fade>
-          </Grid>
+                Bienvenido, porfavor seleccione un sistema{" "}
+              </Typography>{" "}
+            </Fade>{" "}
+          </Grid>{" "}
           <Grid item>
             <ZoomCard
-              cardActionAreaOnClick={(getSystemStatus)}
+              cardActionAreaOnClick={getSystemStatus}
               loading={state.loadingCard}
-              avatarLetter="C" 
-              title="Contratos" 
+              avatarLetter="C"
+              title="Contratos"
               subheader="v1.0"
-              description="Sistema de gestión de contratos para proveedores de Crecic S.A." 
-              image="/static/contratos.png" 
-              transitionDelay="500ms" />
-          </Grid>
+              description="Sistema de gestión de contratos para proveedores de Crecic S.A."
+              image="/static/contratos.png"
+              transitionDelay="500ms"
+            />
+          </Grid>{" "}
           <Grid item>
-            <ZoomCard 
-              avatarLetter="S" 
+            <ZoomCard
+              avatarLetter="S"
               title="Sistema S"
-              subheader="v1.2" 
+              subheader="v1.2"
               description="Sistema de gestión de x para proveedores de Crecic S.A."
               image="/static/sistema-1.jpg"
-              transitionDelay="1500ms" />
-          </Grid>
+              transitionDelay="1500ms"
+            />
+          </Grid>{" "}
           <Grid item>
             <ZoomCard
               avatarLetter="L"
@@ -135,22 +183,45 @@ function Index(props) {
               subheader="v1.1"
               description="Sistema de gestión de y para proveedores de Crecic S.A."
               image="/static/sistema-2.jpg"
-              transitionDelay="2500ms" />
-          </Grid>
-        </Grid>
-      </Grid>
-      <BigSnackbar 
+              transitionDelay="2500ms"
+            />
+          </Grid>{" "}
+        </Grid>{" "}
+      </Grid>{" "}
+      <BigSnackbar
         open={state.openSnackbar}
         message={state.messageSnackbar}
-        loading={state.loading} 
+        loading={state.loading}
         variant={state.snackbarVariant}
-        />
+        handleClose={() =>
+          setState({
+            ...state,
+            openSnackbar: false
+          })
+        }
+      />{" "}
     </DashboardLayout>
   );
 }
 
+Index.getInitialProps = async function() {
+  // 1-  Token Validation or other request here -------------------------
+
+  // const res = await fetch('https://api.tvmaze.com/search/shows?q=batman')
+  // const data = await res.json()
+
+  // console.log(`Show data fetched. Count: ${data.length}`)
+
+  return {
+    user: {
+      name: "Erick",
+      quiroz: "Quiroz"
+    }
+  };
+};
+
 Index.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(Index);
