@@ -31,7 +31,7 @@ const styles = theme => ({
   }
 });
 
-const ZoomCard = props => {
+function ZoomCard(props) {
   const {
     classes,
     avatarLetter,
@@ -86,7 +86,7 @@ const ZoomCard = props => {
       </Card>
     </Zoom>
   );
-};
+}
 
 ZoomCard.propTypes = {
   classes: PropTypes.object.isRequired,

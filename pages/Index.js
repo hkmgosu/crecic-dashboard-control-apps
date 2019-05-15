@@ -115,8 +115,12 @@ function Index(props) {
           loading: false,
           type: "success"
         });
-        // await handleSystemConnection({ message: "Ingresando...", loading: true, type: 'success'});
-        // window.location.assign("http://www.localhost:4001")
+        await handleSystemConnection({
+          message: "Ingresando...",
+          loading: true,
+          type: "success"
+        });
+        window.location.assign("http://www.localhost:4001");
       } else {
         await handleSystemConnection({
           message: "No se ha podido conectar al Software.",
@@ -150,10 +154,10 @@ function Index(props) {
           <Grid item xs={12}>
             <Fade in={true}>
               <Typography variant="h4" align="center" gutterBottom>
-                Bienvenido, porfavor seleccione un sistema{" "}
-              </Typography>{" "}
-            </Fade>{" "}
-          </Grid>{" "}
+                Bienvenido, porfavor seleccione un sistema
+              </Typography>
+            </Fade>
+          </Grid>
           <Grid item>
             <ZoomCard
               cardActionAreaOnClick={getSystemStatus}
@@ -165,7 +169,7 @@ function Index(props) {
               image="/static/contratos.png"
               transitionDelay="500ms"
             />
-          </Grid>{" "}
+          </Grid>
           <Grid item>
             <ZoomCard
               avatarLetter="S"
@@ -175,7 +179,7 @@ function Index(props) {
               image="/static/sistema-1.jpg"
               transitionDelay="1500ms"
             />
-          </Grid>{" "}
+          </Grid>
           <Grid item>
             <ZoomCard
               avatarLetter="L"
@@ -185,9 +189,9 @@ function Index(props) {
               image="/static/sistema-2.jpg"
               transitionDelay="2500ms"
             />
-          </Grid>{" "}
-        </Grid>{" "}
-      </Grid>{" "}
+          </Grid>
+        </Grid>
+      </Grid>
       <BigSnackbar
         open={state.openSnackbar}
         message={state.messageSnackbar}
@@ -199,7 +203,7 @@ function Index(props) {
             openSnackbar: false
           })
         }
-      />{" "}
+      />
     </DashboardLayout>
   );
 }
