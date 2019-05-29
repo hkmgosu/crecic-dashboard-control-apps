@@ -11,8 +11,8 @@ import fetch from "isomorphic-unfetch";
 const styles = theme => ({
   root: {
     ...theme.mixins.gutters(),
-    paddingTop: theme.spacing.unit * 6,
-    paddingBottom: theme.spacing.unit * 2
+    paddingTop: theme.spacing.unit * 9,
+    paddingBottom: theme.spacing.unit * 3
   }
 });
 
@@ -38,53 +38,59 @@ function Index(props) {
     loading = true,
     type = "info",
     loadingCard = true
-  }) => {
-    console.info("handleSystemConnection: ", message);
-    handleLoading({
+  }) =>
+    await handleLoading({
       openSnackbar: true,
       messageSnackbar: message,
       loading,
       loadingCard,
       snackbarVariant: type
     });
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(true);
-      }, 1300);
-    });
-  };
 
   const validateServiceOnline = async url => {
     const serverOnline = await fetch(url);
     const resServerOnline = await serverOnline;
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(resServerOnline);
-      }, 600);
-    });
+    return resServerOnline;
   };
 
-  const getSystemStatus = async () => {
+  const getSystemStatus = async system => {
     try {
-      console.log("init: getSystemStatus");
+      console.info("init: getSystemStatus: ", system);
+
+      const systemRoutes = {
+        contratos: {
+          title: "Contratos",
+          server: "https://jsonplaceholder.typicode.com",
+          api: "https://jsonplaceholder.typicode.com"
+        },
+        sistema2: {
+          title: "Sistema S2",
+          server: "http://www.localhost:4001",
+          api: "http://www.localhost:4001/api"
+        }
+      };
 
       // verificando servidor
       await handleSystemConnection({
-        message: "Conectando a servidor",
+        message: "Conectando a servidor...",
+        loadingCard: system,
         type: "info"
       });
-      await handleSystemConnection({
-        message: "Verificando servidor",
-        type: "info"
+
+      // pause and validate
+      await new Promise(resolve => {
+        setTimeout(resolve, 900);
       });
+
+      // validar service
       let serviceOnlineStatus = await validateServiceOnline(
-        "https://jsonplaceholder.typicode.com"
+        systemRoutes[system].server
       );
       if (serviceOnlineStatus.ok) {
-        console.log("servidor online");
         await handleSystemConnection({
           message: "Servidor ONLINE",
           loading: false,
+          loadingCard: system,
           type: "success"
         });
       } else {
@@ -96,31 +102,43 @@ function Index(props) {
         });
       }
 
+      // pause
+      await new Promise(resolve => {
+        setTimeout(resolve, 600);
+      });
       // verificando APP
       await handleSystemConnection({
-        message: "Conectando con el software",
+        message: `Conectando con al sistema ${systemRoutes[system].title}...`,
+        loadingCard: system,
         type: "info"
       });
-      await handleSystemConnection({
-        message: "Verificando software",
-        type: "info"
+      // pause
+      await new Promise(resolve => {
+        setTimeout(resolve, 900);
       });
+
+      // validar api
       serviceOnlineStatus = await validateServiceOnline(
-        "https://jsonplaceholder.typicode.com/posts/42"
+        systemRoutes[system].api
       );
       if (serviceOnlineStatus.ok) {
-        console.log("APP online");
         await handleSystemConnection({
-          message: "Software ONLINE",
+          message: `${systemRoutes[system].title} ONLINE`,
+          loadingCard: system,
           loading: false,
           type: "success"
         });
+        // pause
+        await new Promise(resolve => {
+          setTimeout(resolve, 600);
+        });
         await handleSystemConnection({
           message: "Ingresando...",
+          loadingCard: system,
           loading: true,
           type: "success"
         });
-        window.location.assign("http://www.localhost:4001");
+        window.location.assign(systemRoutes[system].server);
       } else {
         await handleSystemConnection({
           message: "No se ha podido conectar al Software.",
@@ -151,7 +169,7 @@ function Index(props) {
           justify="center"
           alignItems="flex-start"
         >
-          <Grid item xs={12}>
+          <Grid item xs={12} style={{ margin: 12 }}>
             <Fade in={true}>
               <Typography variant="h4" align="center" gutterBottom>
                 Bienvenido, porfavor seleccione un sistema
@@ -160,8 +178,8 @@ function Index(props) {
           </Grid>
           <Grid item>
             <ZoomCard
-              cardActionAreaOnClick={getSystemStatus}
-              loading={state.loadingCard}
+              cardActionAreaOnClick={() => getSystemStatus("contratos")}
+              loading={state.loadingCard === "contratos"}
               avatarLetter="C"
               title="Contratos"
               subheader="v1.0"
@@ -172,6 +190,8 @@ function Index(props) {
           </Grid>
           <Grid item>
             <ZoomCard
+              cardActionAreaOnClick={() => getSystemStatus("sistema2")}
+              loading={state.loadingCard === "sistema2"}
               avatarLetter="S"
               title="Sistema S"
               subheader="v1.2"
@@ -200,7 +220,9 @@ function Index(props) {
         handleClose={() =>
           setState({
             ...state,
-            openSnackbar: false
+            openSnackbar: false,
+            loading: false,
+            loadingCard: false
           })
         }
       />
@@ -218,8 +240,8 @@ Index.getInitialProps = async function() {
 
   return {
     user: {
-      name: "Erick",
-      quiroz: "Quiroz"
+      name: "Erick Quiroz",
+      rol: "admin"
     }
   };
 };
